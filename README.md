@@ -18,6 +18,9 @@ The r/wallstreetbets subreddit has enormous influence on financial markets but g
 
 • **Database-Centric Architecture**: Single source of truth with intelligent status tracking and duplicate prevention
 
+![Main Dashboard Overview](_media/Dashboard.png)
+*Real-time sentiment analysis dashboard showing entity rankings, sentiment distribution, and key performance metrics*
+
 ## Architecture & Pipeline
 
 📥 **Data Extraction**: Python script uses Reddit API (PRAW) for continuous post and comment collection with automatic text cleaning on SQLite database insert.
@@ -30,6 +33,61 @@ The r/wallstreetbets subreddit has enormous influence on financial markets but g
 
 📊 **Visualization**: Streamlit dashboard with Plotly charts reads processed analysis results directly from the database with performance-optimized SQL queries and 5min caching.
 
+## Project Structure
+
+```
+├── pipeline/                          # 🚀 Main orchestration layer
+│   ├── src/
+│   │   ├── pipeline.py                # Core pipeline logic
+│   │   └── run_pipeline.py            # Entry point & scheduler
+│   └── requirements.txt
+│
+├── extraction/                        # 📥 Data collection & cleaning
+│   ├── main.py                        # CLI interface
+│   ├── reddit_handler.py              # Reddit API integration
+│   ├── config.py                      # API keys & settings
+│   └── db/
+│       ├── func/
+│       │   └── database_handler.py    # SQLite operations
+│       └── wallstreetbets.db          # Main database
+│
+├── ticker_extraction/                 # 🧠 NER model & training
+│   ├── model/
+│   │   └── model-best/                # Trained spaCy model (F1: 0.8)
+│   ├── run_workflow.py                # Training pipeline
+│   ├── config.cfg                     # spaCy configuration
+│   └── corpus/
+│       ├── train.spacy                # Training data
+│       └── dev.spacy                  # Validation data
+│
+├── sentiment_finetuning/              # 💭 Sentiment model & training
+│   ├── model/
+│   │   └── model-best/                # Fine-tuned T5 model
+│   ├── run_sentiment_workflow.py      # Training pipeline
+│   ├── data/
+│   │   ├── labeled_data.json          # Annotated sentiment data
+│   │   └── train.csv / test.csv       # ML-ready datasets
+│   └── scripts/
+│       ├── run_finetuning.py          # T5 fine-tuning logic
+│       └── test_model.py              # Model validation
+│
+├── dashboard/                         # 📊 Interactive visualization
+│   ├── app_modern.py                  # Streamlit app logic
+│   ├── run_modern_dashboard.py        # Dashboard entry point
+│   └── templates/
+│       └── index.html                 # Custom styling
+│
+└── logs/                             # 📝 System monitoring
+    ├── pipeline_YYYYMMDD.log         # Daily execution logs
+    └── state.json                     # Pipeline state tracking
+```
+
+![NER Performance Analysis](_media/NER_Stats.png)
+*Named Entity Recognition performance breakdown showing entity type distribution and detailed statistics with F1-scores of ~0.8*
+
+![Entity Deep-Dive Analysis](_media/Entity_search.png)
+*Individual entity analysis showing sentiment trends, confidence scores, and recent mentions for specific financial instruments*
+
 ## Technical Decisions & Challenges
 
 • **T5 Confidence Score Problem**: Standard T5 implementations delivered constant 1.0 confidence values. Solution through development of custom confidence calculation methods with label-loss comparison and perplexity-based fallback, enabling realistic scores (0.26-0.41 range).
@@ -38,7 +96,10 @@ The r/wallstreetbets subreddit has enormous influence on financial markets but g
 
 • **Custom AI Training for WSB Context**: Standard NLP models failed at sarcastic WSB jargon ("diamond hands", "to the moon", ticker variations). Custom model training on manually annotated WSB data increased recognition accuracy by approximately 35% compared to standard financial NER models.
 
-• **Production Readiness & Maintainability**: Comprehensive code cleanup (15-20GB legacy code / data removed), Unicode handling for Windows compatibility implemented, and warning suppression for clean log outputs integrated.
+• **Production Readiness & Maintainability**: Comprehensive code cleanup (15-20GB legacy code removed), Unicode handling for Windows compatibility implemented, and warning suppression for clean log outputs integrated.
+
+![System Monitoring & Database Health](_media/Database.png)
+*Production monitoring dashboard showing database connection status, processing pipeline health, and real-time data volume metrics*
 
 ---
 
