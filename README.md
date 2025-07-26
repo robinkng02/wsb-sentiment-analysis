@@ -85,7 +85,7 @@ The r/wallstreetbets subreddit has enormous influence on financial markets but g
 ![NER Performance Analysis](_media/NER_Stats.png)
 *Named Entity Recognition performance breakdown showing entity type distribution and detailed statistics with F1-scores of ~0.8*
 
-![Entity Deep-Dive Analysis](_media/Entity_search.png)
+![Entity Deep-Dive Analysis](_media/Entity_Search.png)
 *Individual entity analysis showing sentiment trends, confidence scores, and recent mentions for specific financial instruments*
 
 ## Technical Decisions & Challenges
